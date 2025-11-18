@@ -3,27 +3,16 @@ const path = require('path');
 const app = express();
 const PORT = process.env.PORT || 3000;
 
-// Serve the PDF when someone visits the root URL
+// Serve static files from /public and /pdf
+app.use(express.static('public'));
+app.use('/pdf', express.static('pdf'));
+app.use('/password.json', express.static('public')); // allows access to password.json
+
+// Root route → serves index.html
 app.get('/', (req, res) => {
-  const pdfPath = path.join(__dirname, 'pdf', 'mydocument.pdf');
-
-  // Optional: force download instead of opening in browser
-  // res.download(pdfPath, 'mydocument.pdf');
-
-  // This will open the PDF directly in the browser (recommended)
-  res.sendFile(pdfPath, (err) => {
-    if (err) {
-      res.status(404).send('PDF not found');
-    }
-  });
-});
-
-// Optional: nice route like /download or /pdf
-app.get('/pdf', (req, res) => {
-  res.redirect('/');
+  res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
 app.listen(PORT, () => {
-  console.log(`PDF server running on port ${PORT}`);
-  console.log(`Go to https://your-app.onrender.com to see your PDF`);
+  console.log(`Password-protected PDF running on port ${PORT}`);
 });

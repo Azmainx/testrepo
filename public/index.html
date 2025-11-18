@@ -1,0 +1,31 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Protected PDF</title>
+  <link rel="stylesheet" href="style.css" />
+</head>
+<body>
+  <div class="container">
+    <h1>My Secret Document</h1>
+    <p>This PDF is password protected.</p>
+    <button id="unlockBtn">Unlock PDF</button>
+  </div>
+
+  <!-- Password Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2>Enter Password</h2>
+      <input type="password" id="passInput" placeholder="Password" />
+      <div class="buttons">
+        <button id="submitPass">Unlock</button>
+        <button id="cancel">Cancel</button>
+      </div>
+      <p id="error" style="color:red; display:none;">Wrong password!</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+</body>
+</html>
