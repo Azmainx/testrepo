@@ -4,7 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // === SECURITY: Password from environment variable ===
-const CORRECT_PASSWORD = process.env.PASS || '12345'; // fallback for local testing
+const CORRECT_PASSWORD = '12345'; // fallback for local testing
 
 app.use(express.static('public'));
 app.use(express.json());
