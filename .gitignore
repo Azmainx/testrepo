@@ -3,3 +3,7 @@ node_modules/
 
 # Optional common ignores
 .env
+.DS_Store
+npm-debug.log
+yarn-error.log
+dist/
