@@ -1,32 +1,50 @@
-document.querySelectorAll('.file').forEach(el => {
-  el.addEventListener('click', () => {
-    const url = el.dataset.url;
-    if (el.classList.contains('locked')) {
-      document.getElementById('modal').style.display = 'flex';
-      window.pendingUrl = url;
-    } else {
-      document.getElementById('pdf-viewer').src = url;
-    }
-  });
-});
+const modal = document.getElementById('modal');
+const unlockBtn = document.getElementById('unlockBtn');
+const submitPass = document.getElementById('submitPass');
+const cancel = document.getElementById('cancel');
+const passInput = document.getElementById('passInput');
+const error = document.getElementById('error');
+const pdfViewer = document.getElementById('pdfViewer');
+const pdfFrame = document.getElementById('pdfFrame');
 
-document.getElementById('unlockBtn').onclick = async () => {
-  const pass = document.getElementById('pass').value;
+// Open modal
+unlockBtn.onclick = () => {
+  modal.style.display = 'flex';
+};
+
+// Cancel
+cancel.onclick = () => {
+  modal.style.display = 'none';
+  passInput.value = '';
+  error.style.display = 'none';
+};
+
+// Submit password
+submitPass.onclick = async () => {
   const res = await fetch('/unlock', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password: pass })
+    body: JSON.stringify({
+      password: passInput.value,
+      pdf: window.currentPdf  // important: which PDF we're unlocking
+    })
   });
   const data = await res.json();
+
   if (data.success) {
-    document.getElementById('modal').style.display = 'none';
-    document.getElementById('pdf-viewer').src = window.pendingUrl;
+    modal.style.display = 'none';
+    unlockBtn.style.display = 'none';
+    document.getElementById('status').textContent = 'PDF Unlocked!';
+    pdfViewer.style.display = 'block';
+    pdfFrame.src = `/pdf/${window.currentPdf}.pdf?t=${Date.now()}`; // cache bust
   } else {
-    document.getElementById('error').style.display = 'block';
+    error.style.display = 'block';
   }
 };
 
-// Close modal on background click
-document.getElementById('modal').addEventListener('click', e => {
-  if (e.target === e.currentTarget) e.currentTarget.style.display = 'none';
+// Close modal when clicking outside
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) {
+    modal.style.display = 'none';
+  }
 });

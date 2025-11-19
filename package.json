@@ -1,5 +1,5 @@
 {
-  "name": "vscode-pdf-viewer",
+  "name": "pdf-protected",
   "version": "1.0.0",
   "main": "server.js",
   "scripts": {

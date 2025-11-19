@@ -3,46 +3,19 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>VS Code Vault</title>
-  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <title>Protected PDFs</title>
   <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="vscode-container">
-    <!-- Sidebar -->
-    <div class="sidebar">
-      <div class="title-bar">EXPLORER</div>
-      <div class="tree">
-        <div class="folder open">
-          <span>▼ PROJECT</span>
-          <div class="file" data-url="/files/README.md">README.md</div>
-          <div class="file" data-url="/files/notes.txt">notes.txt</div>
-          <div class="file locked" data-url="/secret-pdf">
-            <span class="icon">Locked</span> secret-document.pdf
-          </div>
-        </div>
-      </div>
-    </div>
+  <div class="container">
+    <h1>My Protected Documents</h1>
+    <p>Click on a document to view it  (password required)</p>
 
-    <!-- Editor Area -->
-    <div class="editor">
-      <div class="tab-bar">
-        <div class="tab active">secret-document.pdf</div>
-      </div>
-      <iframe id="pdf-viewer" src=""></iframe>
+    <div style="margin: 30px 0; display: grid; gap: 15px;">
+      <a href="/pdfs/mydocument" class="pdf-link">My Document.pdf</a>
+      <a href="/pdfs/secret-report" class="pdf-link">Secret Report.pdf</a>
+      <a href="/pdfs/confidential" class="pdf-link">Confidential File.pdf</a>
     </div>
   </div>
-
-  <!-- Password Modal -->
-  <div id="modal" class="modal">
-    <div class="modal-box">
-      <h3>Enter Password</h3>
-      <input type="password" id="pass" placeholder="Password" autocomplete="off"/>
-      <button id="unlockBtn">Unlock PDF</button>
-      <p id="error" class="error">Wrong password</p>
-    </div>
-  </div>
-
-  <script src="script.js"></script>
 </body>
 </html>

@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Viewing PDF</title>
+  <link rel="stylesheet" href="style.css" />
+  <style>
+    .pdf-container {
+      margin-top: 30px;
+      text-align: center;
+    }
+    iframe {
+      width: 90%;
+      height: 80vh;
+      border: none;
+      box-shadow: 0 0 20px rgba(0,0,0,0.5);
+      border-radius: 10px;
+    }
+  </style>
+</head>
+<body>
+  <div class="container">
+    <h1 id="pdfTitle">Loading...</h1>
+    <p id="status">Click below to unlock and view the PDF</p>
+
+    <button id="unlockBtn" style="font-size: 20px; padding: 15px 30px;">Open PDF</button>
+
+    <div class="pdf-container" id="pdfViewer" style="display: none;">
+      <iframe id="pdfFrame"></iframe>
+    </div>
+  </div>
+
+  <!-- Modal -->
+  <div id="modal" class="modal">
+    <div class="modal-content">
+      <h2>Enter Password</h2>
+      <input type="password" id="passInput" placeholder="Password" />
+      <div class="buttons">
+        <button id="submitPass">Unlock</button>
+        <button id="cancel">Cancel</button>
+      </div>
+      <p id="error" style="color:red; display:none;">Wrong password!</p>
+    </div>
+  </div>
+
+  <script src="script.js"></script>
+  <script>
+    // Extract PDF name from URL
+    const path = window.location.pathname; // e.g., /pdfs/mydocument
+    const pdfKey = path.split('/').pop(); // mydocument
+    const pdfFile = pdfKey + '.pdf';
+    document.getElementById('pdfTitle').textContent = pdfFile;
+
+    // Pass the pdfKey to script.js via global
+    window.currentPdf = pdfKey;
+  </script>
+</body>
+</html>
