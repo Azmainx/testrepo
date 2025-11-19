@@ -10,12 +10,18 @@
       margin-top: 30px;
       text-align: center;
     }
-    iframe {
+    .pdf-embed {
       width: 90%;
       height: 80vh;
       border: none;
       box-shadow: 0 0 20px rgba(0,0,0,0.5);
       border-radius: 10px;
+      display: block;
+      margin: 0 auto;
+    }
+    #status {
+      font-style: italic;
+      color: #ccc;
     }
   </style>
 </head>
@@ -27,7 +33,13 @@
     <button id="unlockBtn" style="font-size: 20px; padding: 15px 30px;">Open PDF</button>
 
     <div class="pdf-container" id="pdfViewer" style="display: none;">
-      <iframe id="pdfFrame"></iframe>
+      <!-- Reliable PDF embed: <embed> primary, with <object>/<iframe> fallback -->
+      <embed id="pdfEmbed" class="pdf-embed" type="application/pdf">
+        <object data="" class="pdf-embed" type="application/pdf">
+          <iframe id="pdfFrame" class="pdf-embed" src=""></iframe>
+        </object>
+        <p>Your browser does not support PDF embedding. <a href="#" id="pdfDownload">Download PDF</a></p>
+      </embed>
     </div>
   </div>
 
@@ -54,6 +66,11 @@
 
     // Pass the pdfKey to script.js via global
     window.currentPdf = pdfKey;
+    window.pdfUrl = `/pdf/${pdfFile}?t=${Date.now()}`; // Precompute URL with cache-bust
+
+    // Set up download link fallback
+    const downloadLink = document.getElementById('pdfDownload');
+    downloadLink.href = window.pdfUrl;
   </script>
 </body>
 </html>

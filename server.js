@@ -4,7 +4,7 @@ const app = express();
 const PORT = process.env.PORT || 3000;
 
 // === SECURITY: Password from environment variable ===
-const CORRECT_PASSWORD = '12345'; // fallback for local testing
+const CORRECT_PASSWORD = process.env.PASS || '12345'; // fallback for local testing
 
 app.use(express.static('public'));
 app.use(express.json());
@@ -21,7 +21,7 @@ app.get('/', (req, res) => {
 // Serve individual PDF pages
 app.get('/pdfs/:pdfName', (req, res) => {
   const pdfName = req.params.pdfName;
-  const validPdfs = ['mydocument']; // add your PDFs here
+  const validPdfs = ['mydocument', 'secret-report', 'confidential']; // add your PDFs here
   if (!validPdfs.includes(pdfName)) {
     return res.status(404).send('PDF not found');
   }
@@ -39,7 +39,7 @@ app.post('/unlock', (req, res) => {
   }
 });
 
-// Serve PDF if unlocked
+// Serve PDF if unlocked – FIXED: Add headers for embedding
 app.get('/pdf/:pdfName', (req, res) => {
   const pdfName = req.params.pdfName;
   const key = pdfName.split('.')[0]; // e.g., mydocument.pdf → mydocument
@@ -48,7 +48,16 @@ app.get('/pdf/:pdfName', (req, res) => {
     return res.status(403).send('Password required to view this PDF');
   }
 
-  res.sendFile(path.join(__dirname, 'pdf', `${key}.pdf`));
+  // Set headers for secure embedding (CORS + Content-Type)
+  res.setHeader('Content-Type', 'application/pdf');
+  res.setHeader('Access-Control-Allow-Origin', '*'); // Allow embedding in iframe/embed
+  res.setHeader('Cache-Control', 'no-cache'); // Prevent caching issues
+
+  res.sendFile(path.join(__dirname, 'pdf', `${key}.pdf`), (err) => {
+    if (err) {
+      res.status(500).send('PDF file not found');
+    }
+  });
 });
 
 app.listen(PORT, () => {
