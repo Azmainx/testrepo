@@ -25,7 +25,7 @@ app.post('/unlock', (req, res) => {
 
 app.get('/secret-pdf', (req, res) => {
   if (!unlocked) return res.status(403).send('Access denied');
-  res.sendFile(path.join(__dirname, 'files', 'secret-document.pdf'));
+  res.sendFile(path.join(__dirname, 'files', 'mydocument.pdf'));
 });
 
 app.listen(PORT, () => console.log('VS Code PDF vault ready'));
