@@ -1,76 +1,100 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Viewing PDF</title>
-  <link rel="stylesheet" href="style.css" />
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>PDF Viewer</title>
+  <link rel="stylesheet" href="style.css">
   <style>
-    .pdf-container {
-      margin-top: 30px;
-      text-align: center;
-    }
-    .pdf-embed {
-      width: 90%;
+    .pdf-box {
+      width: 95%;
+      max-width: 900px;
       height: 80vh;
-      border: none;
-      box-shadow: 0 0 20px rgba(0,0,0,0.5);
-      border-radius: 10px;
-      display: block;
-      margin: 0 auto;
+      margin: 30px auto;
+      border: 3px solid #444;
+      border-radius: 12px;
+      box-shadow: 0 0 30px rgba(0,123,255,0.3);
+      display: none;
     }
-    #status {
-      font-style: italic;
-      color: #ccc;
-    }
+    h1 { margin-bottom: 10px; }
   </style>
 </head>
 <body>
   <div class="container">
-    <h1 id="pdfTitle">Loading...</h1>
-    <p id="status">Click below to unlock and view the PDF</p>
+    <h1 id="title">Loading…</h1>
+    <p id="info">Click the button below and enter password <strong>12345</strong></p>
 
-    <button id="unlockBtn" style="font-size: 20px; padding: 15px 30px;">Open PDF</button>
+    <button id="openBtn" style="font-size:22px;padding:16px 32px;">Open PDF</button>
 
-    <div class="pdf-container" id="pdfViewer" style="display: none;">
-      <!-- Reliable PDF embed: <embed> primary, with <object>/<iframe> fallback -->
-      <embed id="pdfEmbed" class="pdf-embed" type="application/pdf">
-        <object data="" class="pdf-embed" type="application/pdf">
-          <iframe id="pdfFrame" class="pdf-embed" src=""></iframe>
-        </object>
-        <p>Your browser does not support PDF embedding. <a href="#" id="pdfDownload">Download PDF</a></p>
-      </embed>
+    <div id="viewer" class="pdf-box">
+      <embed id="pdf" src="" type="application/pdf" width="100%" height="100%">
     </div>
   </div>
 
-  <!-- Modal -->
+  <!-- MODAL -->
   <div id="modal" class="modal">
     <div class="modal-content">
       <h2>Enter Password</h2>
-      <input type="password" id="passInput" placeholder="Password" />
-      <div class="buttons">
-        <button id="submitPass">Unlock</button>
-        <button id="cancel">Cancel</button>
+      <input type="password" id="pass" placeholder="Password" autofocus>
+      <div style="margin-top:15px;">
+        <button id="submit">Unlock</button>
+        <button id="cancel" style="background:#666;">Cancel</button>
       </div>
-      <p id="error" style="color:red; display:none;">Wrong password!</p>
+      <p id="wrong" style="color:red;margin-top:10px;display:none;">Wrong password!</p>
     </div>
   </div>
 
-  <script src="script.js"></script>
   <script>
-    // Extract PDF name from URL
-    const path = window.location.pathname; // e.g., /pdfs/mydocument
-    const pdfKey = path.split('/').pop(); // mydocument
-    const pdfFile = pdfKey + '.pdf';
-    document.getElementById('pdfTitle').textContent = pdfFile;
+    const pdfName = window.location.pathname.split('/').pop();
+    document.getElementById('title').textContent = pdfName + '.pdf';
 
-    // Pass the pdfKey to script.js via global
-    window.currentPdf = pdfKey;
-    window.pdfUrl = `/pdf/${pdfFile}?t=${Date.now()}`; // Precompute URL with cache-bust
+    const modal = document.getElementById('modal');
+    const openBtn = document.getElementById('openBtn');
+    const submit = document.getElementById('submit');
+    const cancel = document.getElementById('cancel');
+    const pass = document.getElementById('pass');
+    const wrong = document.getElementById('wrong');
+    const viewer = document.getElementById('viewer');
+    const pdfEmbed = document.getElementById('pdf');
 
-    // Set up download link fallback
-    const downloadLink = document.getElementById('pdfDownload');
-    downloadLink.href = window.pdfUrl;
+    openBtn.onclick = () => {
+      modal.style.display = 'flex';
+      pass.focus();
+    };
+
+    cancel.onclick = () => {
+      modal.style.display = 'none';
+      pass.value = '';
+      wrong.style.display = 'none';
+    };
+
+    submit.onclick = async () => {
+      const res = await fetch('/unlock', {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json' },
+        body: JSON.stringify({ password: pass.value, pdf: pdfName })
+      });
+      const json = await res.json();
+
+      if (json.success) {
+        modal.style.display = 'none';
+        openBtn.style.display = 'none';
+        viewer.style.display = 'block';
+        pdfEmbed.src = `/view/${pdfName}.pdf?t=${Date.now()}`;
+      } else {
+        wrong.style.display = 'block';
+      }
+    };
+
+    // Press Enter to submit
+    pass.addEventListener('keypress', e => {
+      if (e.key === 'Enter') submit.click();
+    });
+
+    // Close modal when clicking outside
+    modal.addEventListener('click', e => {
+      if (e.target === modal) cancel.click();
+    });
   </script>
 </body>
 </html>
