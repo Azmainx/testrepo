@@ -1,30 +1,42 @@
-const unlockBtn = document.getElementById('unlockBtn');
+const files = document.querySelectorAll('.file');
+const viewer = document.getElementById('viewer');
 const modal = document.getElementById('modal');
-const submitPass = document.getElementById('submitPass');
-const cancel = document.getElementById('cancel');
 const passInput = document.getElementById('passInput');
+const submitPass = document.getElementById('submitPass');
 const error = document.getElementById('error');
 
-unlockBtn.onclick = () => {
-  modal.style.display = 'flex';
-  passInput.value = '';
-  error.style.display = 'none';
-};
+files.forEach(file => {
+  file.addEventListener('click', () => {
+    const path = file.getAttribute('data-path');
 
-cancel.onclick = () => modal.style.display = 'none';
-modal.onclick = (e) => {
-  if (e.target === modal) modal.style.display = 'none';
-};
+    if (file.classList.contains('protected')) {
+      modal.style.display = 'flex';
+      passInput.value = '';
+      error.style.display = 'none';
+      window.currentPdfPath = path;
+    } else {
+      viewer.src = path;
+    }
+  });
+});
 
 submitPass.onclick = async () => {
-  const res = await fetch('/password.json');
+  const res = await fetch('/unlock', {
+    method: 'POST',
+    headers: { 'Content-Type': 'application/json' },
+    body: JSON.stringify({ password: passInput.value })
+  });
   const data = await res.json();
-  
-  if (passInput.value === data.password) {
-    // Correct password → open PDF in new tab
-    window.open('/pdf/mydocument.pdf', '_blank');
+
+  if (data.success) {
+    viewer.src = window.currentPdfPath;
     modal.style.display = 'none';
   } else {
     error.style.display = 'block';
   }
 };
+
+// Close modal
+modal.addEventListener('click', (e) => {
+  if (e.target === modal) modal.style.display = 'none';
+});

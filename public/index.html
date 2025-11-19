@@ -3,26 +3,46 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>Protected PDF</title>
+  <title>My Private Files</title>
   <link rel="stylesheet" href="style.css" />
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
 </head>
 <body>
-  <div class="container">
-    <h1>My Secret Document</h1>
-    <p>This PDF is password protected.</p>
-    <button id="unlockBtn">Unlock PDF</button>
+  <div class="vscode">
+    <!-- Sidebar -->
+    <div class="sidebar">
+      <div class="explorer-title">EXPLORER</div>
+      <div class="file-tree">
+        <div class="folder">
+          <span>◢ My Files</span>
+          <div class="file" data-path="/files/README.md">README.md</div>
+          <div class="file" data-path="/files/notes.txt">notes.txt</div>
+          <div class="file protected" data-path="/open-secret-pdf">
+            <span class="lock">Locked</span> secret-document.pdf
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Content -->
+    <div class="main">
+      <div class="welcome">
+        <h1>Welcome to Your Private Vault</h1>
+        <p>Click any file to open. The secret PDF requires a password.</p>
+      </div>
+      <iframe id="viewer" src=""></iframe>
+    </div>
   </div>
 
   <!-- Password Modal -->
   <div id="modal" class="modal">
     <div class="modal-content">
-      <h2>Enter Password</h2>
-      <input type="password" id="passInput" placeholder="Password" />
-      <div class="buttons">
-        <button id="submitPass">Unlock</button>
-        <button id="cancel">Cancel</button>
-      </div>
-      <p id="error" style="color:red; display:none;">Wrong password!</p>
+      <h2>Unlock Required</h2>
+      <p>This document is protected.</p>
+      <input type="password" id="passInput" placeholder="Enter password" />
+      <button id="submitPass">Unlock & Open</button>
+      <p id="error" class="error">Wrong password!</p>
     </div>
   </div>
 
