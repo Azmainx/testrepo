@@ -1,42 +1,32 @@
-const files = document.querySelectorAll('.file');
-const viewer = document.getElementById('viewer');
-const modal = document.getElementById('modal');
-const passInput = document.getElementById('passInput');
-const submitPass = document.getElementById('submitPass');
-const error = document.getElementById('error');
-
-files.forEach(file => {
-  file.addEventListener('click', () => {
-    const path = file.getAttribute('data-path');
-
-    if (file.classList.contains('protected')) {
-      modal.style.display = 'flex';
-      passInput.value = '';
-      error.style.display = 'none';
-      window.currentPdfPath = path;
+document.querySelectorAll('.file').forEach(el => {
+  el.addEventListener('click', () => {
+    const url = el.dataset.url;
+    if (el.classList.contains('locked')) {
+      document.getElementById('modal').style.display = 'flex';
+      window.pendingUrl = url;
     } else {
-      viewer.src = path;
+      document.getElementById('pdf-viewer').src = url;
     }
   });
 });
 
-submitPass.onclick = async () => {
+document.getElementById('unlockBtn').onclick = async () => {
+  const pass = document.getElementById('pass').value;
   const res = await fetch('/unlock', {
     method: 'POST',
     headers: { 'Content-Type': 'application/json' },
-    body: JSON.stringify({ password: passInput.value })
+    body: JSON.stringify({ password: pass })
   });
   const data = await res.json();
-
   if (data.success) {
-    viewer.src = window.currentPdfPath;
-    modal.style.display = 'none';
+    document.getElementById('modal').style.display = 'none';
+    document.getElementById('pdf-viewer').src = window.pendingUrl;
   } else {
-    error.style.display = 'block';
+    document.getElementById('error').style.display = 'block';
   }
 };
 
-// Close modal
-modal.addEventListener('click', (e) => {
-  if (e.target === modal) modal.style.display = 'none';
+// Close modal on background click
+document.getElementById('modal').addEventListener('click', e => {
+  if (e.target === e.currentTarget) e.currentTarget.style.display = 'none';
 });

@@ -7,33 +7,25 @@ app.use(express.static('public'));
 app.use('/files', express.static('files'));
 app.use(express.json());
 
-// Your fixed password
-const PASSWORD = '12345';
-let isUnlocked = false;
+const PASSWORD = '12345';        // ← change this anytime
+let unlocked = false;
 
-// Main page
 app.get('/', (req, res) => {
   res.sendFile(path.join(__dirname, 'public', 'index.html'));
 });
 
-// Unlock endpoint
 app.post('/unlock', (req, res) => {
   if (req.body.password === PASSWORD) {
-    isUnlocked = true;
+    unlocked = true;
     res.json({ success: true });
   } else {
     res.json({ success: false });
   }
 });
 
-// Protected PDF route
-app.get('/open-secret-pdf', (req, res) => {
-  if (!isUnlocked) {
-    return res.status(403).send('Password required to view this document');
-  }
+app.get('/secret-pdf', (req, res) => {
+  if (!unlocked) return res.status(403).send('Access denied');
   res.sendFile(path.join(__dirname, 'files', 'secret-document.pdf'));
 });
 
-app.listen(PORT, () => {
-  console.log(`VS Code PDF Viewer running on https://your-app.onrender.com`);
-});
+app.listen(PORT, () => console.log('VS Code PDF vault ready'));

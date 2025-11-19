@@ -3,46 +3,43 @@
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
-  <title>My Private Files</title>
-  <link rel="stylesheet" href="style.css" />
-  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <title>VS Code Vault</title>
   <link href="https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css" />
 </head>
 <body>
-  <div class="vscode">
+  <div class="vscode-container">
     <!-- Sidebar -->
     <div class="sidebar">
-      <div class="explorer-title">EXPLORER</div>
-      <div class="file-tree">
-        <div class="folder">
-          <span>◢ My Files</span>
-          <div class="file" data-path="/files/README.md">README.md</div>
-          <div class="file" data-path="/files/notes.txt">notes.txt</div>
-          <div class="file protected" data-path="/open-secret-pdf">
-            <span class="lock">Locked</span> secret-document.pdf
+      <div class="title-bar">EXPLORER</div>
+      <div class="tree">
+        <div class="folder open">
+          <span>▼ PROJECT</span>
+          <div class="file" data-url="/files/README.md">README.md</div>
+          <div class="file" data-url="/files/notes.txt">notes.txt</div>
+          <div class="file locked" data-url="/secret-pdf">
+            <span class="icon">Locked</span> secret-document.pdf
           </div>
         </div>
       </div>
     </div>
 
-    <!-- Main Content -->
-    <div class="main">
-      <div class="welcome">
-        <h1>Welcome to Your Private Vault</h1>
-        <p>Click any file to open. The secret PDF requires a password.</p>
+    <!-- Editor Area -->
+    <div class="editor">
+      <div class="tab-bar">
+        <div class="tab active">secret-document.pdf</div>
       </div>
-      <iframe id="viewer" src=""></iframe>
+      <iframe id="pdf-viewer" src=""></iframe>
     </div>
   </div>
 
   <!-- Password Modal -->
   <div id="modal" class="modal">
-    <div class="modal-content">
-      <h2>Unlock Required</h2>
-      <p>This document is protected.</p>
-      <input type="password" id="passInput" placeholder="Enter password" />
-      <button id="submitPass">Unlock & Open</button>
-      <p id="error" class="error">Wrong password!</p>
+    <div class="modal-box">
+      <h3>Enter Password</h3>
+      <input type="password" id="pass" placeholder="Password" autocomplete="off"/>
+      <button id="unlockBtn">Unlock PDF</button>
+      <p id="error" class="error">Wrong password</p>
     </div>
   </div>
 
